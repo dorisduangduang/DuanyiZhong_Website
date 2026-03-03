@@ -16,11 +16,11 @@ const Navbar = () => {
 
   const navItems = [
     { label: '首页', path: '/' },
-    { label: '精选项目', path: '/#projects' },
-    { label: '研究', path: '/#research' },
-    { label: '方法论', path: '/#methodology' },
-    { label: '设计', path: '/#design' },
-    { label: '关于我', path: '/#about' },
+    { label: '精选项目', path: '#projects' },
+    { label: '研究', path: '#research' },
+    { label: '方法论', path: '#methodology' },
+    { label: '设计', path: '#design' },
+    { label: '关于我', path: '#about' },
   ];
 
   return (
