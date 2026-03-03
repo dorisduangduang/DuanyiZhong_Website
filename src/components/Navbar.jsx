@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '../utils/cn';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,12 +17,42 @@ const Navbar = () => {
 
   const navItems = [
     { label: '首页', path: '/' },
-    { label: '精选项目', path: '#projects' },
-    { label: '研究', path: '#research' },
-    { label: '方法论', path: '#methodology' },
-    { label: '设计', path: '#design' },
-    { label: '关于我', path: '#about' },
+    { label: '精选项目', path: 'projects' },
+    { label: '研究', path: 'research' },
+    { label: '方法论', path: 'methodology' },
+    { label: '设计', path: 'design' },
+    { label: '关于我', path: 'about' },
   ];
+
+  const handleNavClick = (e, path) => {
+    e.preventDefault();
+    
+    if (path === '/') {
+      navigate('/');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (location.pathname !== '/') {
+      // 如果不在首页，跳转到首页并传递目标 ID
+      navigate('/', { state: { targetId: path } });
+    } else {
+      // 如果在首页，直接滚动
+      const element = document.getElementById(path);
+      if (element) {
+        const offset = 80;
+        const bodyRect = document.body.getBoundingClientRect().top;
+        const elementRect = element.getBoundingClientRect().top;
+        const elementPosition = elementRect - bodyRect;
+        const offsetPosition = elementPosition - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+  };
 
   return (
     <nav
@@ -31,7 +62,11 @@ const Navbar = () => {
       )}
     >
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold tracking-tighter hover:opacity-70 transition-opacity">
+        <Link 
+          to="/" 
+          onClick={(e) => handleNavClick(e, '/')}
+          className="text-xl font-bold tracking-tighter hover:opacity-70 transition-opacity"
+        >
           钟端溢 <span className="text-slate-400 font-normal ml-2">Zhong Duanyi</span>
         </Link>
         
@@ -39,7 +74,8 @@ const Navbar = () => {
           {navItems.map((item) => (
             <a
               key={item.label}
-              href={item.path}
+              href={item.path === '/' ? '/' : `#${item.path}`}
+              onClick={(e) => handleNavClick(e, item.path)}
               className="text-sm font-medium text-slate-600 hover:text-accent transition-colors"
             >
               {item.label}

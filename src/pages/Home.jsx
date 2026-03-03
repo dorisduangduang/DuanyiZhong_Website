@@ -5,6 +5,7 @@ import Section from '../components/Section';
 import Counter from '../components/Counter';
 import ProjectCard from '../components/ProjectCard';
 import { ChevronRight, Mail, Phone, MessageSquare } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 // 动态导入设计展示图 (photo4 - photo11)
 const designImages = import.meta.glob('../assets/images/photo*.png', { eager: true });
@@ -29,6 +30,51 @@ const getDesignGallery = () => {
 const Home = () => {
   const { profile, stats, projects, research, methodology, design, about } = portfolioData;
   const designGallery = getDesignGallery();
+  const location = useLocation();
+
+  React.useEffect(() => {
+    // 优先检查 state 中的 targetId
+    if (location.state?.targetId) {
+      const id = location.state.targetId;
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          const offset = 80;
+          const bodyRect = document.body.getBoundingClientRect().top;
+          const elementRect = element.getBoundingClientRect().top;
+          const elementPosition = elementRect - bodyRect;
+          const offsetPosition = elementPosition - offset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+          
+          // 清除 state，防止刷新页面时重复滚动
+          window.history.replaceState({}, document.title);
+        }
+      }, 100);
+    } 
+    // 兼容 hash 跳转 (作为备选方案)
+    else if (location.hash) {
+      const id = location.hash.replace('#', '');
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          const offset = 80;
+          const bodyRect = document.body.getBoundingClientRect().top;
+          const elementRect = element.getBoundingClientRect().top;
+          const elementPosition = elementRect - bodyRect;
+          const offsetPosition = elementPosition - offset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
+    }
+  }, [location]);
 
   return (
     <div className="pt-20">
